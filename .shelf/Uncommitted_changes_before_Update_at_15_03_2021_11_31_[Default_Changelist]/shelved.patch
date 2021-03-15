@@ -1,0 +1,134 @@
+Index: src/main/java/com/rpxdytx/magickraft/items/MageWand.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.rpxdytx.magickraft.items;\r\n\r\nimport com.rpxdytx.magickraft.Magickraft;\r\nimport com.rpxdytx.magickraft.creativetabs.MKTabs;\r\nimport net.minecraft.creativetab.CreativeTabs;\r\nimport net.minecraft.item.Item;\r\nimport net.minecraft.item.ItemStack;\r\n\r\npublic class MageWand extends Item\r\n{\r\n    public MageWand()\r\n    {\r\n        setUnlocalizedName(\"mage_wand\");\r\n        setRegistryName(Magickraft.MODID,\"mage_wand\");\r\n        setCreativeTab(CreativeTabs.TOOLS);\r\n        isEnchantable(new ItemStack(MKItems.MAGE_WAND));\r\n\r\n        MKItems.ITEMS.add(this);\r\n    }\r\n\r\n    @Override\r\n    public boolean isEnchantable(ItemStack stack) {\r\n        return true;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/rpxdytx/magickraft/items/MageWand.java b/src/main/java/com/rpxdytx/magickraft/items/MageWand.java
+--- a/src/main/java/com/rpxdytx/magickraft/items/MageWand.java	(revision 1a879e43991a4679465315f8804654023079b86f)
++++ b/src/main/java/com/rpxdytx/magickraft/items/MageWand.java	(date 1615818590109)
+@@ -2,7 +2,6 @@
+ 
+ import com.rpxdytx.magickraft.Magickraft;
+ import com.rpxdytx.magickraft.creativetabs.MKTabs;
+-import net.minecraft.creativetab.CreativeTabs;
+ import net.minecraft.item.Item;
+ import net.minecraft.item.ItemStack;
+ 
+@@ -12,7 +11,7 @@
+     {
+         setUnlocalizedName("mage_wand");
+         setRegistryName(Magickraft.MODID,"mage_wand");
+-        setCreativeTab(CreativeTabs.TOOLS);
++        setCreativeTab(MKTabs.MAGE_TAB);
+         isEnchantable(new ItemStack(MKItems.MAGE_WAND));
+ 
+         MKItems.ITEMS.add(this);
+Index: src/main/java/com/rpxdytx/magickraft/handlers/RegistryHandler.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.rpxdytx.magickraft.handlers;\r\n\r\nimport com.rpxdytx.magickraft.items.MKItems;\r\nimport net.minecraft.client.renderer.block.model.ModelResourceLocation;\r\nimport net.minecraft.item.Item;\r\nimport net.minecraftforge.client.event.ModelRegistryEvent;\r\nimport net.minecraftforge.client.model.ModelLoader;\r\nimport net.minecraftforge.event.RegistryEvent;\r\nimport net.minecraftforge.fml.common.Mod;\r\nimport net.minecraftforge.fml.common.eventhandler.SubscribeEvent;\r\n\r\n@Mod.EventBusSubscriber\r\npublic class RegistryHandler\r\n{\r\n    @SubscribeEvent\r\n    public void itemRegistry(RegistryEvent.Register<Item> event)\r\n    {\r\n        Registerer.registerItems(event, MKItems.ITEMS.toArray(new Item[0]));\r\n    }\r\n\r\n    @SubscribeEvent\r\n    public void modelRegistry(ModelRegistryEvent event)\r\n    {\r\n        for(Item item : MKItems.ITEMS)\r\n        {\r\n            ModelLoader.setCustomModelResourceLocation(item,0,\r\n                    new ModelResourceLocation(item.getRegistryName(),\"inventory\"));\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/com/rpxdytx/magickraft/handlers/RegistryHandler.java b/src/main/java/com/rpxdytx/magickraft/handlers/RegistryHandler.java
+--- a/src/main/java/com/rpxdytx/magickraft/handlers/RegistryHandler.java	(revision 1a879e43991a4679465315f8804654023079b86f)
++++ b/src/main/java/com/rpxdytx/magickraft/handlers/RegistryHandler.java	(date 1615818430183)
+@@ -1,5 +1,6 @@
+ package com.rpxdytx.magickraft.handlers;
+ 
++import com.rpxdytx.magickraft.Magickraft;
+ import com.rpxdytx.magickraft.items.MKItems;
+ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+ import net.minecraft.item.Item;
+@@ -8,14 +9,18 @@
+ import net.minecraftforge.event.RegistryEvent;
+ import net.minecraftforge.fml.common.Mod;
+ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
++import net.minecraftforge.fml.common.registry.GameRegistry;
++import net.minecraftforge.registries.IForgeRegistry;
+ 
+-@Mod.EventBusSubscriber
++@GameRegistry.ObjectHolder(Magickraft.MODID)
++@Mod.EventBusSubscriber(modid = Magickraft.MODID)
+ public class RegistryHandler
+ {
+     @SubscribeEvent
+     public void itemRegistry(RegistryEvent.Register<Item> event)
+     {
+-        Registerer.registerItems(event, MKItems.ITEMS.toArray(new Item[0]));
++        IForgeRegistry<Item> registry = event.getRegistry();
++        registry.registerAll(MKItems.ITEMS.toArray(new Item[0]));
+     }
+ 
+     @SubscribeEvent
+Index: src/main/java/com/rpxdytx/magickraft/handlers/Registerer.java
+===================================================================
+diff --git a/src/main/java/com/rpxdytx/magickraft/handlers/Registerer.java b/src/main/java/com/rpxdytx/magickraft/handlers/Registerer.java
+deleted file mode 100644
+--- a/src/main/java/com/rpxdytx/magickraft/handlers/Registerer.java	(revision 1a879e43991a4679465315f8804654023079b86f)
++++ /dev/null	(revision 1a879e43991a4679465315f8804654023079b86f)
+@@ -1,62 +0,0 @@
+-package com.rpxdytx.magickraft.handlers;
+-
+-import net.minecraft.block.Block;
+-import net.minecraft.creativetab.CreativeTabs;
+-import net.minecraft.item.Item;
+-import net.minecraft.util.ResourceLocation;
+-import net.minecraftforge.event.RegistryEvent;
+-import net.minecraftforge.registries.IForgeRegistry;
+-
+-public class Registerer
+-{
+-    public static void registerItem(Item item, RegistryEvent.Register<Item> event)
+-    {
+-        IForgeRegistry<Item> registry = event.getRegistry();
+-
+-        //Item info:
+-        ResourceLocation itemRegName;
+-        String itemUnName;
+-        CreativeTabs itemTab;
+-
+-        itemRegName = item.getRegistryName();
+-        itemUnName = item.getUnlocalizedName();
+-        itemTab = item.getCreativeTab();
+-
+-        item.setCreativeTab(itemTab);
+-        item.setRegistryName(itemRegName);
+-        item.setUnlocalizedName(itemUnName);
+-
+-        registry.register(item);
+-    }
+-
+-    public static void registerItems(RegistryEvent.Register<Item> event, Item... items)
+-    {
+-        IForgeRegistry<Item> registry = event.getRegistry();
+-
+-        registry.registerAll(items);
+-    }
+-
+-    public static void registerBlock(Block block, RegistryEvent.Register<Block> event)
+-    {
+-        IForgeRegistry<Block> registry = event.getRegistry();
+-
+-        //Block info:
+-        ResourceLocation blockRegName;
+-        String blockUnName;
+-
+-        blockRegName = block.getRegistryName();
+-        blockUnName = block.getUnlocalizedName();
+-
+-        block.setRegistryName(blockRegName);
+-        block.setUnlocalizedName(blockUnName);
+-
+-        registry.register(block);
+-    }
+-
+-    public static void registerBlocks(RegistryEvent.Register<Block> event, Block... blocks)
+-    {
+-        IForgeRegistry<Block> registry = event.getRegistry();
+-
+-        registry.registerAll(blocks);
+-    }
+-}
